@@ -5,8 +5,6 @@
 #include "node.h"
 #include "iterator.h"
 
-using namespace std;
-
 template <typename T>
 class List {
 	Node<T>* head;
@@ -18,8 +16,16 @@ class List {
 public:
 	List();
 
-	T front(){ return head->data;}
-	T back(){ return tail->data;}
+	T front(){
+		if(!head)
+			throw "Lista vacía";
+		return head->data;
+	}
+	T back(){
+		if(!tail)
+			throw "Lista vacía";
+		return tail->data;
+	}
 	void push_front(T value);
 	void push_back(T value);
 	void pop_front();
@@ -44,14 +50,20 @@ List<T>::List(){
 }
 
 template <typename T>
+List<T>::~List(){
+	clear();
+}
+
+template <typename T>
 void List<T>::print(){
 	if( !empty() ){
 		Node<T>* it = head;
 		do{
 			std::cout << it->data;
-			if( it -> next == nullptr ) std::cout<<" ";
+			if( it -> next != nullptr ) std::cout<<" ";
 			else std::cout<<"\n";
-		}while( it -> next != nullptr);
+			it = it -> next;
+		}while( it );
 	}
 }
 
@@ -60,7 +72,7 @@ void List<T>::push_front(T value){
 	Node<T>* newnode = new Node<T>;
 	newnode->data = value;
 
-	if( size == 0 ){
+	if( nodes == 0 ){
 		newnode -> next = nullptr;
 		tail = newnode;
 	}else{
@@ -75,7 +87,7 @@ void List<T>::push_back(T value){
 	Node<T>* newnode = new Node<T>;
 	newnode->data = value;
 	newnode->next = nullptr;
-	if( size == 0 ){
+	if( nodes == 0 ){
 		head = newnode;
 	}else{
 		tail -> next = newnode;
@@ -99,14 +111,14 @@ template <typename T>
 void List<T>::pop_back(){
 	if( !empty() ){
 		Node<T>* it = head;
-		while( it ){
-			if( it -> next == nullptr ){
-				tail = it;
- 				delete (it -> next);
-			}
-			it = it -> next;
+		while(it->next!=tail){
+			it = it->next;
 		}
-		nodes--;
+		tail = it;
+		it = it->next;
+		tail->next = nullptr;		
+		delete it->next;
+		nodes--;		
 	}
 }
 
@@ -126,6 +138,31 @@ void List<T>::print_reverse(){
 }
 template<typename T>
 void List<T>::clear(){
+	if(head){
+		nodes = 0;
+		head->killSelf();
+		head = tail = nullptr;
+	}
+
 	
+}
+
+template < typename T>
+T  List<T>::get(int position){
+	if( position < 0 || position >= nodes)
+		throw "Invalid range";
+	Node<T>* it = head;
+	for(int i = 0; i<position; ++i) {
+		it = it -> next;
+	}
+	return it->data;
+}
+
+template < typename T>
+void  List<T>::concat(List<T> &other){
+	for(int i = 0; i<other.size(); ++i) {
+		push_back(other.get(i));
+	}
+	nodes += other.size();
 }
 #endif
