@@ -37,8 +37,14 @@ public:
 	void print();
 	void print_reverse();
 	void clear();
-	Iterator<T> begin();
-	Iterator<T> end();
+	Iterator<T> begin(){
+		Iterator<T> b(head);
+		return b;
+	};
+	Iterator<T> end(){
+		Iterator<T> e(tail->next);
+		return e;
+	};
 
 	~List();
 };
@@ -103,6 +109,7 @@ void List<T>::pop_front(){
 		head = head -> next;
 		delete tmpnode;
 		nodes--;
+		
 	}
 
 }
@@ -143,8 +150,6 @@ void List<T>::clear(){
 		head->killSelf();
 		head = tail = nullptr;
 	}
-
-	
 }
 
 template < typename T>
@@ -160,8 +165,8 @@ T  List<T>::get(int position){
 
 template < typename T>
 void  List<T>::concat(List<T> &other){
-	for(int i = 0; i<other.size(); ++i) {
-		push_back(other.get(i));
+	for(Node<T>* it = other.head; it!=nullptr; it=it->next){
+		push_back(it->data);
 	}
 	nodes += other.size();
 }
