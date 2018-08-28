@@ -34,6 +34,10 @@ int main(){
 	test.print();
 	test.print_reverse();	
 	cout << test.get(2) << "\n";
-	cout << test.get(4) << "\n";	
+	//cout << test.get(4) << "\n";
+	for(Iterator<int> it = test.begin(); it!=test.end(); ++it)
+		{
+			cout << (*it) << "\n\t"[it!=test.end()];
+		}
     return 0;
 }
